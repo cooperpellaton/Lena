@@ -143,6 +143,13 @@ def upload_file():
     </form>
     '''
 
+def watson_face_recognition():
+    # "images_file=@prez.jpg" "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces?api_key={api-key}&version=2016-05-20"
+    facial_information = []
+    for file in os.listdir('/images')
+        r = requests.post(images_file = file, "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces?api_key="+config.watson+"&version=2016-05-20")
+        content = json.dumps(r)
+        facial_information.append(content)
 
 def nltk(tags, query):
     indices = []
