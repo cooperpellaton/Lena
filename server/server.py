@@ -2,11 +2,7 @@ import json
 import logging
 import os
 import pprint
-import sys
-# import faces
 import tempfile
-import urllib
-import twitter
 import config
 import json as js
 import tweepy
@@ -32,12 +28,6 @@ ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'tif'])
 toSave = []
 
 # Setup Twitter API credentials.
-twit = twitter.Api(
-    consumer_key=config.consumer_key,
-    consumer_secret=config.consumer_secret,
-    access_token_key=config.access_token_key,
-    access_token_secret=config.access_token_secret)
-
 auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
 auth.set_access_token(config.access_token_key, config.access_token_secret)
 api = tweepy.API(auth)
@@ -118,31 +108,33 @@ def allowed_file(filename):
 @app.route('/api/profile_picture_upload', methods=['POST'])
 def process_images():
     file = request.files['pic']
-    n = str(randint(0, 1000000))
+    value = None
+    filename = file.filename
     try:
-        with open('outs.json') as json_data:
+        with open('cache.txt', 'r') as json_data:
             d = js.load(json_data)
     except:
         d = {}
 
     if filename in d:
         value = d[filename]
+        resp = Response(
+            response=js.dumps(value), status=200, mimetype="application/json")
+        return resp
     else:
-        filename = file.filename
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         p = Popen(
             ['python2', 'faces.py', 'images/' + filename], stdout=PIPE, stderr=PIPE)
         output, err = p.communicate()
         logging.info(filename)
         with open('output.txt', 'r') as file:
-            value = bool(file.readlines())
+            value = file.readlines()
         d[filename] = value
-        with open('outs.json', 'w') as outfile:
-                js.dump(d, outfile)
-
-    resp = Response(
+        with open('cache.txt', 'w') as outfile:
+            js.dump(d, outfile)
+        resp = Response(
             response=js.dumps(value), status=200, mimetype="application/json")
-    return resp
+        return resp
 
 
 def watson_face_recognition():
