@@ -17,7 +17,6 @@ import oauth2client
 import requests
 from oauth2client.client import OAuth2WebServerFlow, Storage
 
-from bson import json_util
 from flask import Flask, Response, jsonify, redirect, request, url_for
 from flask_login import *
 from pymongo import MongoClient
@@ -36,7 +35,7 @@ http = httplib2.Http()
 app = Flask(__name__)
 
 # Setup logging
-logging.basicConfig(filename='mvp.log', level=logging.DEBUG)
+logging.basicConfig(filename='debug.log', level=logging.INFO)
 
 # Setup a DB
 database = "localhost:27017"
@@ -45,18 +44,32 @@ db = client.beta
 threads = []
 
 
+@app.route('/api/gallery', methods=["POST"])
+def filter_gallery():
+    content = request.get_json()
+    logging.info(json)
+    tags = content['tags']
+    query = content['query']
+    nltk_filter(tags, query)
+
+
 @app.route('/api/tag_upload', methods=["POST"])
 def recieve_tags():
     if(request.data != None):
-        tags = request.data
-        summed_twitter_data = get_twitter_data(tags)
+        tags = request.get_json()
+        summed_twitter_data = get_twitter_data(tags['tags'])
         # db.tags.insert_one(tags)
-    resp = Response(
-        response=json.dumps(summed_twitter_data), status=200,  mimetype="text/plain")
-    	return resp
+        resp = Response(
+            response=json.dumps(summed_twitter_data), status=200,  mimetype="text/plain")
+        return resp
     else:
         resp = Response(
             response="There was a failure with tag upload", status=200,  mimetype="text/plain")
+
+
+def nltk_filter(tags, query):
+        # DO SOME NLTK SHIT HERE.
+    pass
 
 
 def get_twitter_data(tags):
