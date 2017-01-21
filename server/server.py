@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import pickle
 import pprint
 import sys
 import tempfile
@@ -54,26 +53,27 @@ def recieve_tags():
         # db.tags.insert_one(tags)
     resp = Response(
         response=json.dumps(summed_twitter_data), status=200,  mimetype="text/plain")
-    return resp
+    	return resp
     else:
         resp = Response(
             response="There was a failure with tag upload", status=200,  mimetype="text/plain")
 
 
 def get_twitter_data(tags):
-	try:
-		string = "q="
-		twitter_data = []
-		for x in tags:
-			for y in x:	
-				string = string + "%20" + y + "OR"
-			string = string + "%20include%3Aretweets"
-			results = api.GetSearch(string)
-			twitter_data.append(results)
-		return twitter_data
-	except:
-		logging.info("There was an error, Twitter probably dropped the ball, like normal.")
-		pass 
+    try:
+        string = "q="
+        twitter_data = []
+        for x in tags:
+            for y in x:
+                string = string + "%20" + y + "OR"
+            string = string + "%20include%3Aretweets"
+            results = api.GetSearch(string)
+            twitter_data.append(results)
+        return twitter_data
+    except:
+        logging.info(
+            "There was an error, Twitter probably dropped the ball, like normal.")
+        pass
 
 
 if __name__ == "__main__":
