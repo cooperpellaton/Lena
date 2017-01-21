@@ -23,7 +23,7 @@ from flask_login import *
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/images'
+UPLOAD_FOLDER = '/images/'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'tif'])
 
 # Setup Twitter API credentials.
@@ -73,12 +73,13 @@ def getHashTags():
         if i < 5:
             max_tweets = 10
             tweets += [status.text for status in tweepy.Cursor(
-                api.search, q=tag, languages=["en"]).items(max_tweets).filer(safe)]
+                api.search, q=tag, languages=["en"])
+                .items(max_tweets).filer(safe)]
         i += 1
 
     hashtags = {}
     for tweet in tweets:
-        sentiment = getSentiment(tweet)
+        sentiment = get_sentiment(tweet)
         if sentiment == -2:
             continue
         words = tweet.split(" ")
@@ -95,12 +96,12 @@ def getHashTags():
     for j in hashtags:
         score = hashtags[j]['score']
         freq = hashtags[j]['freq']
-        candid[j] = freq*score
+        candid[j] = freq * score
 
-    forReturn = sorted(candid, reverse=True)
-    logging.info(forReturn)
+    for_return = sorted(candid, reverse=True)
+    logging.info(for_return)
     resp = Response(
-        response=js.dumps(forReturn), status=200, mimetype="application/json")
+        response=js.dumps(for_return), status=200, mimetype="application/json")
     return resp
 
 
@@ -143,13 +144,17 @@ def upload_file():
     </form>
     '''
 
+
 def watson_face_recognition():
-    # "images_file=@prez.jpg" "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces?api_key={api-key}&version=2016-05-20"
     facial_information = []
-    for file in os.listdir('/images')
-        r = requests.post(images_file = file, "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces?api_key="+config.watson+"&version=2016-05-20")
+    for file in os.listdir('/images/'):
+        r = requests.post("https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces?api_key="
+                          + config.watson
+                          + "&version=2016-05-20",
+                          images_file=file)
         content = json.dumps(r)
         facial_information.append(content)
+
 
 def nltk(tags, query):
     indices = []
@@ -157,7 +162,7 @@ def nltk(tags, query):
     for pic in tags:
         j = 0
         for tag in pic:
-            if isSimilar(query, tag):
+            if is_similar(query, tag):
                 indices.append(i)
                 break
             if j > 2:
@@ -168,7 +173,7 @@ def nltk(tags, query):
     return indices
 
 
-def getSentiment(text):
+def get_sentiment(text):
     alchemyapi = AlchemyAPI()
     response = alchemyapi.sentiment('html', text)
     if response['status'] == 'OK':
@@ -180,7 +185,7 @@ def getSentiment(text):
         return -2
 
 
-def isSimilar(word1, word2):
+def is_similar(word1, word2):
     logging.info(word1)
     logging.info(word2)
     if len(word1) == 0 or len(word2) == 0:
@@ -191,14 +196,14 @@ def isSimilar(word1, word2):
             d = js.load(json_data)
     except:
         d = {}
-    key = word1+word2
+    key = word1 + word2
     if word1[0] > word2[0]:
-        key = word2+word1
+        key = word2 + word1
 
     if key in d:
         return d[key]
 
-    url = "https://wordsapiv1.p.mashape.com/words/"+word1
+    url = "https://wordsapiv1.p.mashape.com/words/" + word1
     auth_headers = {
         "X-Mashape-Key": "zFpocNrlhomsh7A5WFL8yd3UX8dBp1amWRljsnqrwkVW8V0Udm",
         "Accept": "application/json"
@@ -217,25 +222,6 @@ def isSimilar(word1, word2):
         js.dump(d, outfile)
 
     return d[key]
-
-
-def get_twitter_data(tags):
-    try:
-        string = "q="
-        twitter_data = []
-        for x in tags:
-            for y in x:
-                string = string + "%20" + y + "OR"
-            string = string + "%20include%3Aretweets&count=100"
-            results = twit.GetSearch(raw_query=string)
-            data = json.dumps(results)
-            twitter_data.append(data)
-        return twitter_data
-    except:
-        logging.info(
-            "There was an error, Twitter probably dropped the ball, like normal.")
-        pass
-
 
 if __name__ == "__main__":
     # Run this with python3 server.py and then tail -f mvp.log
