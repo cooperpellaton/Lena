@@ -119,19 +119,29 @@ def allowed_file(filename):
 def process_images():
     file = request.files['pic']
     n = str(randint(0, 1000000))
-    filename = file.filename
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    p = Popen(['python2', 'faces.py', 'images/'+ filename], stdout=PIPE, stderr=PIPE)
-    output,err = p.communicate()
-    logging.info(filename)
-    with open('output.txt', 'r') as file:
-        output = bool(file.readlines())
-        insert_tuple = [output, filename]
-        global toSave
-        toSave.append[insert_tuple]
-        logging.info(toSave)
+    try:
+        with open('outs.json') as json_data:
+            d = js.load(json_data)
+    except:
+        d = {}
+
+    if filename in d:
+        value = d[filename]
+    else:
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        p = Popen(
+            ['python2', 'faces.py', 'images/' + filename], stdout=PIPE, stderr=PIPE)
+        output, err = p.communicate()
+        logging.info(filename)
+        with open('output.txt', 'r') as file:
+            value = bool(file.readlines())
+        d[filename] = value
+        with open('outs.json', 'w') as outfile:
+                js.dump(d, outfile)
+
     resp = Response(
-        response=js.dumps(output), status=200, mimetype="application/json")
+            response=js.dumps(value), status=200, mimetype="application/json")
     return resp
 
 
