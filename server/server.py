@@ -177,15 +177,19 @@ def watson_face_recognition():
 
 
 def nltk(tags, query):
+    words = query.split(" ")
     indices = []
     i = 0
     for pic in tags:
         j = 0
         for tag in pic:
-            if is_similar(query, tag):
-                indices.append(i)
-                break
-            if j > 2:
+            br = False
+            for word in words:
+                if word == tag:
+                    indices.append(i)
+                    br = True
+                    break
+            if br:
                 break
             j += 1
         i += 1
@@ -203,6 +207,32 @@ def get_sentiment(text):
             return 0
     else:
         return -2
+
+
+def lev_dist(source, target):
+    if source == target:
+        return 0
+
+# words = open(test_file.txt,'r').read().split();
+
+    # Prepare matrix
+    slen, tlen = len(source), len(target)
+    dist = [[0 for i in range(tlen+1)] for x in range(slen+1)]
+    for i in range(slen+1):
+        dist[i][0] = i
+    for j in range(tlen+1):
+        dist[0][j] = j
+
+    # Counting distance
+    for i in range(slen):
+        for j in range(tlen):
+            cost = 0 if source[i] == target[j] else 1
+            dist[i+1][j+1] = min(
+                dist[i][j+1] + 1,   # deletion
+                dist[i+1][j] + 1,   # insertion
+                dist[i][j] + cost   # substitution
+            )
+    return dist[-1][-1]
 
 
 def is_similar(word1, word2):
@@ -233,11 +263,13 @@ def is_similar(word1, word2):
         json = js.loads(response.text)
 
     except:
-        json = ""
+        json = None
 
     logging.info(json)
-    d[key] = (word2 in js.dumps(json['results']))
-
+    if json and len(json['results']) > 0:
+        d[key] = (word2 in js.dumps(json['results']))
+    else:
+        d[key] = False
     with open('words.json', 'w') as outfile:
         js.dump(d, outfile)
 

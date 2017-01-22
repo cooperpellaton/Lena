@@ -41,7 +41,7 @@ Video Highlights Page:
 
 
 ## Machine Learning and More
-Now that the intent of Lena is understood, the design of the platform can be explained. Following, the machine learning pipeline will be disected.
+Now that the intent of Lena is understood, the design of the platform can be explained. Following, the machine learning pipeline will be dissected.
 
 Here is a visual representation of the following pipeline:
 ![](assets/Pipeline.png)
