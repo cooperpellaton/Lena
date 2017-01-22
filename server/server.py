@@ -126,7 +126,6 @@ def process_images():
         p = Popen(
             ['python2', 'faces.py', 'images/' + filename], stdout=PIPE, stderr=PIPE)
         output, err = p.communicate()
-        logging.info(filename)
         with open('output.txt', 'r') as file:
             value = file.readlines()
         d[filename] = value
@@ -135,6 +134,35 @@ def process_images():
         resp = Response(
             response=js.dumps(value), status=200, mimetype="application/json")
         return resp
+
+# @app.route('/api/video_upload', methods=['POST'])
+# def process_videos():
+#     file = request.files['vid']
+#     value = None
+#     filename = file.filename
+#     try:
+#         with open('cache.txt', 'r') as json_data:
+#             d = js.load(json_data)
+#     except:
+#         d = {}
+
+#     if filename in d:
+#         value = d[filename]
+#         resp = Response(
+#             response=js.dumps(value), status=200, mimetype="application/json")
+#         return resp
+#     else:
+#         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#         # Call the highligher on the upload video.
+
+
+@app.route('/api/videos', methods=['POST', 'GET'])
+def process_videos():
+    with open('video_cache.txt', 'r') as file:
+        highlights = file.readlines()
+    resp = Response(
+        response=js.dumps(highlights), status=200, mimetype="application/json")
+    return resp
 
 
 def watson_face_recognition():

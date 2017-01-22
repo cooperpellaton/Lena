@@ -75,7 +75,7 @@ def classifyProfilePic(image):
     resizeImages(image)
     faces = getFaces(image)
     if len(faces) != 1:
-        return False
+        return (len(faces), False)
     img = misc.imread(image)
     face = faces[0]['face_location']
     y = face["top"]
@@ -90,14 +90,13 @@ def classifyProfilePic(image):
     js = visual_recognition.classify(images_file=image_to_upload, classifier_ids=[
                                      config.model_id], owners=['me'], threshold=0)
     try:
-        return js['images'][0]['classifiers'][0]['classes'][0]['score'] > 0.5
+        return (len(faces), js['images'][0]['classifiers'][0]['classes'][0]['score'] > 0.5)
     except:
-        print("I didn't execute!")
-        return False
+        return (len(faces), False)
 
 
 filename = sys.argv[1]
 p=classifyProfilePic(filename)
 print(p)
 with open('output.txt', 'w') as file:  
-    file.write(str(p))
+    file.write(json.dumps(p))
