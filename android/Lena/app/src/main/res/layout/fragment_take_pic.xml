@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parent_takepic">
+
+    <FrameLayout
+        android:id="@+id/mySurfaceView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.example.benlalah.lena.CustomPreview
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        </com.example.benlalah.lena.CustomPreview>
+
+    </FrameLayout>
+
+        <Button android:id="@+id/takepic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/mySurfaceView"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:text="Take Pic"
+            />
+
+</RelativeLayout>

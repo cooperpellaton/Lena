@@ -1,0 +1,78 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fff"
+    tools:context="com.example.benlalah.lena.MediaFacebook">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile pictures"
+            android:id="@+id/txtProfile"
+            android:textColor="#666"
+            android:textSize="9pt"
+            android:paddingLeft="5dp"
+            android:visibility="invisible"
+            android:layout_marginTop="10dp"/>
+        <GridView
+            android:id="@+id/profilePics"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:columnWidth="120dp"
+            android:drawSelectorOnTop="true"
+            android:gravity="center"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtFriends"
+            android:text="Friends pictures"
+            android:paddingLeft="5dp"
+            android:textColor="#666"
+            android:textSize="9pt"
+            android:visibility="invisible"
+            android:layout_marginTop="10dp"/>
+        <GridView
+            android:id="@+id/friendsPics"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:columnWidth="120dp"
+            android:drawSelectorOnTop="true"
+            android:gravity="center"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtCover"
+            android:text="Cover pictures"
+            android:paddingLeft="5dp"
+            android:textColor="#666"
+            android:textSize="9pt"
+            android:visibility="invisible"
+            android:layout_marginTop="10dp"/>
+        <ListView
+            android:id="@+id/coverPics"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+
+
+</LinearLayout>
+</ScrollView>
